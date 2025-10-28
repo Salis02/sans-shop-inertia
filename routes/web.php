@@ -6,13 +6,14 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 
 // Admin Routes (protected by auth & role middleware)
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+// Route::middleware(['auth', , 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
 
     //Categories
     Route::resource('categories', CategoryController::class);
 
     //Products
-    Route::resource('categories', ProductController::class);
+    // Route::resource('categories', ProductController::class);
 });
 
 //Customer Routes

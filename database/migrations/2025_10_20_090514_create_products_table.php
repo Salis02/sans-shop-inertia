@@ -21,10 +21,11 @@ return new class extends Migration
             $table->integer('stock')->default(0);
             $table->string('sku')->unique();
             $table->enum('status', ['draft', 'active', 'archived'])->default('draft');
-            $table->foreignUuid('created_by')->constrained('users', 'uuid');
-            $table->foreignUuid('updated_by')->nullable()->constrained('users', 'uuid');
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
+
         });
     }
 
