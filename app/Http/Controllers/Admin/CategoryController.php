@@ -62,7 +62,7 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function update(UpdateCategoryRequest $request, Category $category) 
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
         $category->update([
             ...$request->validate(),
@@ -70,5 +70,20 @@ class CategoryController extends Controller
         ]);
 
         return redirect()
+            ->route('admin.categories.index')
+            ->with('success', 'Kategori berhasil di update');
+    }
+
+    public function destroy(Category $category)
+    {
+        if ($category->isParent()) {
+            return back()->with('error', 'Tidak dapat menghapus kategori yang memiliki sub-kateogri');
+        }
+
+        $category->delete();
+
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('success', 'Kategori berhasil dihapus');
     }
 }
