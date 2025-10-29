@@ -42,8 +42,10 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request)
     {
+        $data = $request->validated();
+
         $category = Category::create([
-            ...$request->validate(),
+            ...$data,
             'slug' => Str::slug($request->name),
         ]);
 
@@ -66,8 +68,10 @@ class CategoryController extends Controller
 
     public function update(UpdateCategoryRequest $request, Category $category)
     {
+        $data=$request->validated();
+
         $category->update([
-            ...$request->validate(),
+            ...$data,
             'slug' => Str::slug($request->name),
         ]);
 
