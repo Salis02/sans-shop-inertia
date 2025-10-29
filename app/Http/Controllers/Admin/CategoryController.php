@@ -19,7 +19,7 @@ class CategoryController extends Controller
             ->with('parent')
             ->withCount('products')
             ->when($request->search, function ($query, $search) {
-                $query->where('name', 'like', "%{ $search }%");
+                $query->where('name', 'like', "%{$search}%");
             })
             ->latest()
             ->paginate(10)

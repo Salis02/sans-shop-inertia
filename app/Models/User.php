@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
     ];
 
     /**
@@ -59,5 +60,10 @@ class User extends Authenticatable
     public function getRoleNameAttribute()
     {
         return $this->role ? $this->name : 'Customer';
+    }
+
+    public function idAdmin(): bool
+    {
+        return $this->role?->name === 'admin';
     }
 }
