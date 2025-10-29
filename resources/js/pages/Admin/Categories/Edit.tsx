@@ -2,17 +2,34 @@ import { Head, useForm, Link } from '@inertiajs/react'
 import AppLayout from '@/layouts/app-layout'
 import { type BreadcrumbItem } from '@/types'
 
-interface Props {
-    category: {
-        id: number
-        name: string
-        slug: string
-    }
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'Dashboard', href: '/dashboard' },
+    { title: 'Categories', href: '/admin/categories' },
+    { title: 'Edit', href: '/admin/categories/edit' },
+]
+
+interface Category {
+    id: number
+    name: string
+    parent_id: number | null
+    description: string | null
 }
 
-export default function EditCategory({ category }: Props) {
-    const { data, setData, put, processing, errors } = useForm({
-        name: category.name,
+export default function EditCategory({
+    category,
+    parents = [],
+}: {
+    category: Category
+    parents?: { id: number; name: string }[]
+}) {
+    const { data, setData, put, processing, errors } = useForm<{
+        name: string
+        parent_id: string | null
+        description: string
+    }>({
+        name: category.name || '',
+        parent_id: category.parent_id ? String(category.parent_id) : null,
+        description: category.description || '',
     })
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -20,18 +37,14 @@ export default function EditCategory({ category }: Props) {
         put(`/admin/categories/${category.id}`)
     }
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Dashboard', href: '/dashboard' },
-        { title: 'Categories', href: '/admin/categories' },
-        { title: `Edit: ${category.name}`, href: '#' },
-    ]
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Edit ${category.name}`} />
+            <Head title="Edit Category" />
             <div className="max-w-lg p-6 mx-auto">
                 <h2 className="text-xl font-semibold mb-4">Edit Category</h2>
+
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                    {/* Name */}
                     <div>
                         <label className="block text-sm font-medium mb-1">Name</label>
                         <input
@@ -40,9 +53,37 @@ export default function EditCategory({ category }: Props) {
                             onChange={(e) => setData('name', e.target.value)}
                             className="w-full rounded-lg border border-gray-300 p-2 text-sm"
                         />
-                        {errors.name && (
-                            <div className="text-sm text-red-600 mt-1">{errors.name}</div>
-                        )}
+                        {errors.name && <div className="text-sm text-red-600 mt-1">{errors.name}</div>}
+                    </div>
+
+                    {/* Parent */}
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Parent Category</label>
+                        <select
+                            value={data.parent_id ?? ''}
+                            onChange={(e) => setData('parent_id', e.target.value || null)}
+                            className="w-full rounded-lg border border-gray-300 p-2 text-sm"
+                        >
+                            <option value="">-- No Parent (Main Category) --</option>
+                            {parents.map((parent) => (
+                                <option key={parent.id} value={parent.id}>
+                                    {parent.name}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.parent_id && <div className="text-sm text-red-600 mt-1">{errors.parent_id}</div>}
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Description</label>
+                        <textarea
+                            value={data.description}
+                            onChange={(e) => setData('description', e.target.value)}
+                            className="w-full rounded-lg border border-gray-300 p-2 text-sm"
+                            rows={3}
+                        />
+                        {errors.description && <div className="text-sm text-red-600 mt-1">{errors.description}</div>}
                     </div>
 
                     <button

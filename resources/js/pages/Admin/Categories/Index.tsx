@@ -79,6 +79,72 @@ export default function CategoriesIndex({ categories, filters }: Props) {
                     </button>
                 </form>
 
+                {/* Table */}
+                <div className="bg-white dark:bg-gray-700 rounded-lg shadow overflow-hidden">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Nama
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Parent
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Produk
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Aksi
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-700">
+                            {categories.data.length > 0 ? (
+                                categories.data.map((category) => (
+                                    <tr key={category.id}>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm font-medium text-gray-900">
+                                                {category.name}
+                                            </div>
+                                            <div className="text-sm text-gray-500">
+                                                {category.slug}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {category.parent?.name || '-'}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {category.product_count || 0} produk
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3">
+                                            <Link
+                                                href={`/admin/categories/${category.id}/edit`}
+                                                className="text-blue-600 hover:text-blue-900"
+                                            >
+                                                Edit
+                                            </Link>
+                                            <button
+                                                onClick={() => handleDelete(category.id)}
+                                                className="text-red-600 hover:text-red-900"
+                                            >
+                                                Hapus
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td
+                                        colSpan={4}
+                                        className="px-6 py-4 text-center text-gray-500"
+                                    >
+                                        Tidak ada data kategori
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
                 {/* List */}
                 {items.length === 0 ? (
                     <div className="relative min-h-[200px] overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
